@@ -21,7 +21,9 @@
 ├─ api/
 │  ├─ telegram-webhook.js
 │  ├─ morning-briefing.js
-│  └─ setup-webhook.js
+│  ├─ setup-webhook.js
+│  ├─ test-message.js
+│  └─ debug-webhook.js
 ├─ lib/
 │  ├─ config.js
 │  ├─ handlers.js
@@ -71,8 +73,8 @@ CRON_SECRET
 권장 기본값:
 
 ```text
-OPENAI_TEXT_MODEL=gpt-5.5
-OPENAI_IMAGE_MODEL=gpt-5.5
+OPENAI_TEXT_MODEL=gpt-4.1-mini
+OPENAI_IMAGE_MODEL=gpt-4.1-mini
 NEWS_LOOKBACK_HOURS=48
 PUBLIC_BASE_URL=https://your-vercel-domain.vercel.app
 CARD_SCRIPT_TTL_SECONDS=604800
@@ -168,6 +170,36 @@ https://your-vercel-domain.vercel.app/api/setup-webhook?secret=SETUP_SECRET
 
 ```text
 https://your-vercel-domain.vercel.app/api/morning-briefing?secret=CRON_SECRET
+```
+
+## 문제 확인용 테스트 주소
+
+배포와 웹훅 연결은 성공했는데 텔레그램에서 답장이 오지 않으면 아래 순서로 확인하세요.
+
+1. 먼저 Vercel 서버가 텔레그램으로 메시지를 보낼 수 있는지 확인합니다.
+
+```text
+https://your-vercel-domain.vercel.app/api/test-message?secret=SETUP_SECRET
+```
+
+이 주소를 열었을 때 텔레그램으로 테스트 메시지가 오면 `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`는 정상입니다.
+
+2. 웹훅이 제대로 연결되어 있는지 확인합니다.
+
+```text
+https://your-vercel-domain.vercel.app/api/debug-webhook?secret=SETUP_SECRET
+```
+
+응답의 `telegram.result.url`이 아래 주소와 비슷해야 합니다.
+
+```text
+https://your-vercel-domain.vercel.app/api/telegram-webhook
+```
+
+3. 텍스트 답장이 계속 실패하면 `OPENAI_TEXT_MODEL`을 아래 값으로 설정한 뒤 Redeploy하세요.
+
+```text
+OPENAI_TEXT_MODEL=gpt-4.1-mini
 ```
 
 ## 기존 getUpdates 방식에서 전환할 때

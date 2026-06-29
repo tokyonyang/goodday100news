@@ -41,10 +41,12 @@ async function handleTelegramUpdate(update) {
   const messageId = message?.message_id;
 
   if (!text || !chatId || !messageId) {
+    console.log("Ignored update without text/chat/message id");
     return;
   }
 
   if (!isAllowedChat(chatId)) {
+    console.log(`Ignored message from unauthorized chat: ${chatId}`);
     return;
   }
 
