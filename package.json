@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": "20.x"
   },
   "scripts": {
     "check": "node --check api/telegram-webhook.js && node --check api/morning-briefing.js && node --check api/setup-webhook.js && node --check lib/config.js && node --check lib/handlers.js && node --check lib/intent.js && node --check lib/news.js && node --check lib/openai.js && node --check lib/prompts.js && node --check lib/storage.js && node --check lib/telegram.js"
