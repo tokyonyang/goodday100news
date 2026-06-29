@@ -12,7 +12,7 @@
 - `카드뉴스 스크립트` 요청 시 제작 스크립트만 텍스트로 전송
 - 카드뉴스 이미지 생성 실패 시 제작 스크립트를 fallback으로 전송
 - `모닝브리핑` 요청 시 당일 브리핑 전송
-- Vercel Cron으로 매일 한국시간 오전 7시 30분 자동 모닝브리핑
+- Vercel Cron으로 매일 한국시간 오전 7시 자동 모닝브리핑
 
 ## 파일 구조
 
@@ -178,14 +178,14 @@ https://your-vercel-domain.vercel.app/api/setup-webhook?secret=SETUP_SECRET
 
 ## 자동 모닝브리핑 시간
 
-`vercel.json`에 매일 `22:30 UTC`로 설정되어 있습니다. 한국시간으로는 다음 날 오전 7시 30분입니다.
+`vercel.json`에 매일 `22:00 UTC`로 설정되어 있습니다. 한국시간으로는 다음 날 오전 7시입니다. Vercel Hobby 플랜에서는 같은 시간대 안에서 최대 약 1시간 정도 늦게 실행될 수 있습니다.
 
 ```json
 {
   "crons": [
     {
       "path": "/api/morning-briefing",
-      "schedule": "30 22 * * *"
+      "schedule": "0 22 * * *"
     }
   ]
 }
