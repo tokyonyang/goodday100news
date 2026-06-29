@@ -1,15 +1,29 @@
 import { env } from "../lib/config.js";
+import { safeErrorMessage } from "../lib/errors.js";
 import { sendMorningBriefing } from "../lib/handlers.js";
 
 export async function GET(request) {
-  const chatId = env("TELEGRAM_CHAT_ID");
+  try {
+    const chatId = env("TELEGRAM_CHAT_ID");
 
-  if (!isCronOrManualRequest(request)) {
-    return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
+    if (!isCronOrManualRequest(request)) {
+      return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
+    }
+
+    await sendMorningBriefing(chatId);
+    return Response.json({ ok: true, message: "morning briefing sent" });
+  } catch (error) {
+    console.error(error);
+
+    return Response.json(
+      {
+        ok: false,
+        error: "morning_briefing_failed",
+        message: safeErrorMessage(error)
+      },
+      { status: 500 }
+    );
   }
-
-  await sendMorningBriefing(chatId);
-  return Response.json({ ok: true });
 }
 
 function isCronOrManualRequest(request) {
@@ -21,6 +35,15 @@ function isCronOrManualRequest(request) {
     return true;
   }
 
+  const authorization = request.headers.get("authorization") || "";
+  if (cronSecret && authorization === `Bearer ${cronSecret}`) {
+    return true;
+  }
+
+  if (request.headers.get("x-vercel-cron-schedule")) {
+    return true;
+  }
+
   const userAgent = request.headers.get("user-agent") || "";
-  return userAgent.includes("vercel-cron");
+  return userAgent.toLowerCase().includes("vercel-cron");
 }
