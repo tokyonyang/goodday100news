@@ -149,6 +149,14 @@ https://your-vercel-domain.vercel.app/api/setup-webhook?secret=SETUP_SECRET
 /help
 ```
 
+내 chat_id 확인:
+
+```text
+/chatid
+```
+
+`/api/test-message`에서 `Bad Request: chat not found`가 나오면 Vercel의 `TELEGRAM_CHAT_ID`가 실제 채팅방 ID와 다른 상태입니다. 텔레그램 봇에게 `/chatid`를 보내고, 돌아온 숫자를 `TELEGRAM_CHAT_ID`에 넣은 뒤 Vercel에서 다시 Redeploy하세요.
+
 ## 자동 모닝브리핑 시간
 
 `vercel.json`에 매일 `22:30 UTC`로 설정되어 있습니다. 한국시간으로는 다음 날 오전 7시 30분입니다.
@@ -183,6 +191,14 @@ https://your-vercel-domain.vercel.app/api/test-message?secret=SETUP_SECRET
 ```
 
 이 주소를 열었을 때 텔레그램으로 테스트 메시지가 오면 `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`는 정상입니다.
+
+만약 아래 오류가 나오면 `TELEGRAM_CHAT_ID`가 틀린 것입니다.
+
+```text
+Bad Request: chat not found
+```
+
+텔레그램 봇에게 `/chatid`를 보내고, 봇이 알려준 값을 Vercel의 `TELEGRAM_CHAT_ID`에 다시 넣으세요.
 
 2. 웹훅이 제대로 연결되어 있는지 확인합니다.
 

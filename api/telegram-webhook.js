@@ -6,6 +6,7 @@ import {
   HELP_MESSAGE,
   isCardScriptRequest,
   isCardNewsRequest,
+  isChatIdCommand,
   isHelpCommand,
   isMorningBriefingRequest,
   isTrendRankingRequest,
@@ -42,6 +43,13 @@ async function handleTelegramUpdate(update) {
 
   if (!text || !chatId || !messageId) {
     console.log("Ignored update without text/chat/message id");
+    return;
+  }
+
+  if (isChatIdCommand(text)) {
+    await sendMessage(chatId, `현재 텔레그램 chat_id는 ${chatId} 입니다. 이 값을 Vercel의 TELEGRAM_CHAT_ID에 넣어주세요.`, {
+      replyToMessageId: messageId
+    });
     return;
   }
 
