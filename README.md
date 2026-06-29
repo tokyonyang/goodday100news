@@ -23,7 +23,9 @@
 │  ├─ morning-briefing.js
 │  ├─ setup-webhook.js
 │  ├─ test-message.js
-│  └─ debug-webhook.js
+│  ├─ debug-webhook.js
+│  ├─ test-openai.js
+│  └─ test-news.js
 ├─ lib/
 │  ├─ config.js
 │  ├─ handlers.js
@@ -217,6 +219,20 @@ https://your-vercel-domain.vercel.app/api/telegram-webhook
 ```text
 OPENAI_TEXT_MODEL=gpt-4.1-mini
 ```
+
+4. OpenAI 연결만 따로 확인합니다.
+
+```text
+https://your-vercel-domain.vercel.app/api/test-openai?secret=SETUP_SECRET
+```
+
+5. 뉴스 수집만 따로 확인합니다.
+
+```text
+https://your-vercel-domain.vercel.app/api/test-news?secret=SETUP_SECRET
+```
+
+`/api/test-message`는 성공하는데 일반 키워드 답변이 실패하면, 대부분 `/api/test-openai` 또는 `/api/test-news` 쪽에서 원인이 드러납니다.
 
 ## 기존 getUpdates 방식에서 전환할 때
 

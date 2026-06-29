@@ -1,4 +1,5 @@
 import { baseUrlFromRequest, env } from "../lib/config.js";
+import { safeErrorMessage } from "../lib/errors.js";
 import { setWebhook } from "../lib/telegram.js";
 
 export async function GET(request) {
@@ -48,9 +49,4 @@ function validateTelegramWebhookSecret(secret) {
       "Invalid TELEGRAM_WEBHOOK_SECRET. Use only A-Z, a-z, 0-9, underscore(_), or hyphen(-). Do not use symbols like !."
     );
   }
-}
-
-function safeErrorMessage(error) {
-  const message = error instanceof Error ? error.message : String(error);
-  return message.replace(/bot\d+:[A-Za-z0-9_-]+/g, "bot<hidden-token>");
 }

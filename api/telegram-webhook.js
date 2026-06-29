@@ -1,5 +1,6 @@
 import { waitUntil } from "@vercel/functions";
 import { env } from "../lib/config.js";
+import { userFacingErrorMessage } from "../lib/errors.js";
 import {
   extractCardScriptKeyword,
   extractCardKeyword,
@@ -107,8 +108,18 @@ async function handleTelegramUpdate(update) {
     await sendKeywordBriefing(chatId, text, messageId);
   } catch (error) {
     console.error(error);
-    await sendMessage(chatId, "처리 중 오류가 발생했습니다. 잠시 뒤 다시 시도해주세요.", {
-      replyToMessageId: messageId
-    });
+    await sendMessage(
+      chatId,
+      [
+        "처리 중 오류가 발생했습니다.",
+        "",
+        userFacingErrorMessage(error),
+        "",
+        "Vercel에서 /api/test-openai 또는 /api/test-news 진단 주소를 확인해보세요."
+      ].join("\n"),
+      {
+        replyToMessageId: messageId
+      }
+    );
   }
 }

@@ -1,4 +1,5 @@
 import { env, optionalEnv } from "../lib/config.js";
+import { safeErrorMessage } from "../lib/errors.js";
 import { getWebhookInfo } from "../lib/telegram.js";
 
 export async function GET(request) {
@@ -36,9 +37,4 @@ export async function GET(request) {
       { status: 500 }
     );
   }
-}
-
-function safeErrorMessage(error) {
-  const message = error instanceof Error ? error.message : String(error);
-  return message.replace(/bot\d+:[A-Za-z0-9_-]+/g, "bot<hidden-token>");
 }
