@@ -19,7 +19,10 @@ export async function GET(request) {
         hasOpenAiKey: Boolean(optionalEnv("OPENAI_API_KEY")),
         hasTelegramBotToken: Boolean(optionalEnv("TELEGRAM_BOT_TOKEN")),
         hasTelegramChatId: Boolean(optionalEnv("TELEGRAM_CHAT_ID")),
+        hasTelegramAllowedChatIds: Boolean(optionalEnv("TELEGRAM_ALLOWED_CHAT_IDS")),
         hasTelegramWebhookSecret: Boolean(optionalEnv("TELEGRAM_WEBHOOK_SECRET")),
+        telegramChatId: optionalEnv("TELEGRAM_CHAT_ID") ? "<set>" : "<missing>",
+        telegramAllowedChatIds: optionalEnv("TELEGRAM_ALLOWED_CHAT_IDS") ? "<set>" : "<empty>",
         textModel: optionalEnv("OPENAI_TEXT_MODEL", "gpt-4.1-mini"),
         imageModel: optionalEnv("OPENAI_IMAGE_MODEL", "gpt-4.1-mini")
       },

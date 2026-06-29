@@ -49,6 +49,7 @@ Vercel 프로젝트의 `Settings` → `Environment Variables`에 아래 값을 �
 OPENAI_API_KEY
 TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
+TELEGRAM_ALLOWED_CHAT_IDS
 TELEGRAM_WEBHOOK_SECRET
 SETUP_SECRET
 CRON_SECRET
@@ -71,6 +72,14 @@ TELEGRAM_WEBHOOK_SECRET
 SETUP_SECRET
 CRON_SECRET
 ```
+
+개인 채팅과 공유 채널을 동시에 허용하려면 아래 값을 선택적으로 추가합니다.
+
+```text
+TELEGRAM_ALLOWED_CHAT_IDS=개인_chat_id,공유채널_chat_id
+```
+
+채널 chat_id는 보통 `-100`으로 시작합니다.
 
 권장 기본값:
 
@@ -158,6 +167,14 @@ https://your-vercel-domain.vercel.app/api/setup-webhook?secret=SETUP_SECRET
 ```
 
 `/api/test-message`에서 `Bad Request: chat not found`가 나오면 Vercel의 `TELEGRAM_CHAT_ID`가 실제 채팅방 ID와 다른 상태입니다. 텔레그램 봇에게 `/chatid`를 보내고, 돌아온 숫자를 `TELEGRAM_CHAT_ID`에 넣은 뒤 Vercel에서 다시 Redeploy하세요.
+
+공유 채널에서 쓰려면 봇을 채널 관리자로 추가한 뒤, 채널에 `/chatid`를 게시해서 채널 chat_id를 확인하세요. 채널 글은 텔레그램에서 `channel_post` 업데이트로 오기 때문에, 웹훅을 다시 설정해야 합니다.
+
+```text
+https://your-vercel-domain.vercel.app/api/setup-webhook?secret=SETUP_SECRET
+```
+
+다시 설정한 뒤 `/api/debug-webhook?secret=SETUP_SECRET` 응답에서 `telegram.result.allowed_updates`에 `channel_post`가 포함되어 있는지 확인하세요.
 
 ## 자동 모닝브리핑 시간
 

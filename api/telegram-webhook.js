@@ -37,15 +37,18 @@ export async function GET() {
 }
 
 async function handleTelegramUpdate(update) {
-  const message = update.message;
+  const message = update.message || update.channel_post;
   const text = normalizeQuestion(message?.text || "");
   const chatId = message?.chat?.id;
   const messageId = message?.message_id;
+  const updateType = update.channel_post ? "channel_post" : "message";
 
   if (!text || !chatId || !messageId) {
     console.log("Ignored update without text/chat/message id");
     return;
   }
+
+  console.log(`Received ${updateType} from chat ${chatId}: ${text.slice(0, 80)}`);
 
   if (isChatIdCommand(text)) {
     await sendMessage(chatId, `현재 텔레그램 chat_id는 ${chatId} 입니다. 이 값을 Vercel의 TELEGRAM_CHAT_ID에 넣어주세요.`, {
