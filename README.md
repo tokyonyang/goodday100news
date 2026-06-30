@@ -12,7 +12,7 @@
 - `카드뉴스 스크립트` 요청 시 제작 스크립트만 텍스트로 전송
 - 카드뉴스 이미지 생성 실패 시 제작 스크립트를 fallback으로 전송
 - `모닝브리핑` 요청 시 당일 브리핑 전송
-- Vercel Cron으로 매일 한국시간 오전 7시 자동 모닝브리핑
+- Vercel Cron으로 매일 한국시간 오전 5시 57분 자동 모닝브리핑
 
 ## 파일 구조
 
@@ -178,14 +178,14 @@ https://your-vercel-domain.vercel.app/api/setup-webhook?secret=SETUP_SECRET
 
 ## 자동 모닝브리핑 시간
 
-`vercel.json`에 매일 `22:00 UTC`로 설정되어 있습니다. 한국시간으로는 다음 날 오전 7시입니다. Vercel Hobby 플랜에서는 같은 시간대 안에서 최대 약 1시간 정도 늦게 실행될 수 있습니다.
+`vercel.json`에 매일 `20:57 UTC`로 설정되어 있습니다. 한국시간으로는 다음 날 오전 5시 57분입니다. Vercel Hobby 플랜에서는 같은 시간대 안에서 최대 약 1시간 정도 늦게 실행될 수 있습니다.
 
 ```json
 {
   "crons": [
     {
       "path": "/api/morning-briefing",
-      "schedule": "0 22 * * *"
+      "schedule": "57 20 * * *"
     }
   ]
 }
@@ -271,3 +271,42 @@ https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/deleteWebhook
 - 이미지 안의 한글 텍스트 품질은 생성 모델 상태에 따라 달라질 수 있습니다. 그래서 텔레그램 사진 캡션에도 핵심 설명과 출처를 같이 넣습니다.
 - 카드뉴스 이미지 생성에 실패하면 제작 스크립트를 대신 보내도록 처리했습니다.
 - 투자 판단을 대신하는 용도가 아니라, 이슈 파악과 자료 정리용으로 사용하는 것을 권장합니다.
+
+
+## 한국 기준 안전 보정
+
+이번 수정본은 아래 운영 원칙을 코드에 반영했습니다.
+
+- 기본 지역은 한국, 기본 시간대는 `Asia/Seoul`입니다.
+- 뉴스 근거자료는 기본 최근 48시간 이내 기사만 사용합니다.
+- 발행시각이 확인되지 않는 기사는 기본적으로 제외합니다.
+- `오늘 날씨`, `날씨`, `비`, `우산` 같은 요청에는 서울 기준 오늘 날씨 정보를 함께 제공합니다.
+- 2~4글자 한국어 이름으로 보이는 키워드는 동명이인 가능성을 경고하고, 직함·소속·사건명 일치 여부를 확인하도록 안내합니다.
+- 기사 URL은 본문에 길게 노출하지 않고 텔레그램 링크 버튼으로 분리합니다.
+
+권장 환경변수:
+
+```text
+DEFAULT_REGION=KR
+DEFAULT_LOCALE=ko-KR
+DEFAULT_TIMEZONE=Asia/Seoul
+SUPPORTING_NEWS_MAX_AGE_HOURS=48
+EXCLUDE_UNKNOWN_PUBLISHED_AT=true
+WEATHER_ENABLED=true
+WEATHER_DEFAULT_CITY=서울
+WEATHER_DEFAULT_LAT=37.5665
+WEATHER_DEFAULT_LON=126.9780
+PERSON_KEYWORD_GUARD=true
+PERSON_KEYWORD_MIN_CONTEXT_MATCH=2
+TELEGRAM_LINK_BUTTON_LIMIT=8
+```
+
+테스트 문구:
+
+```text
+/ping
+/chatid
+/topic 오늘 날씨
+/topic 원달러 환율
+/topic 안정환
+```

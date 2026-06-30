@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/morning-briefing",
-      "schedule": "0 22 * * *"
+      "schedule": "57 20 * * *"
     }
   ],
   "functions": {

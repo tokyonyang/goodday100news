@@ -10,6 +10,8 @@ import {
   isChatIdCommand,
   isHelpCommand,
   isMorningBriefingRequest,
+  isTopicCommand,
+  extractTopicKeyword,
   isTrendRankingRequest,
   normalizeQuestion
 } from "../lib/intent.js";
@@ -75,6 +77,18 @@ async function handleTelegramUpdate(update) {
 
     if (isTrendRankingRequest(text)) {
       await sendTrendRanking(chatId, messageId);
+      return;
+    }
+
+    if (isTopicCommand(text)) {
+      const keyword = extractTopicKeyword(text);
+      if (!keyword) {
+        await sendMessage(chatId, "분석할 주제를 같이 보내주세요. 예: /topic 원달러 환율", {
+          replyToMessageId: messageId
+        });
+        return;
+      }
+      await sendKeywordBriefing(chatId, keyword, messageId);
       return;
     }
 
